@@ -100,6 +100,11 @@ public class CordovaHttpPlugin extends CordovaPlugin {
             String value = args.getString(1);
             this.setHeader(header, value);
             callbackContext.success();
+        } else if (action.equals("setTimeouts")) {
+            int connectionTimeout = args.getInt(0);
+            int readTimeout = args.getInt(1);
+            CordovaHttp.setTimeouts(connectionTimeout, readTimeout);
+            callbackContext.success();
         } else if (action.equals("uploadFile")) {
             String urlString = args.getString(0);
             JSONObject params = args.getJSONObject(1);

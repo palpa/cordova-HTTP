@@ -5,6 +5,7 @@ package com.synconset;
 
 import java.net.UnknownHostException;
 import java.util.Map;
+import java.net.SocketTimeoutException;
 
 import org.apache.cordova.CallbackContext;
 import org.json.JSONException;
@@ -18,7 +19,6 @@ import com.github.kevinsawicki.http.HttpRequest;
 import com.github.kevinsawicki.http.HttpRequest.HttpRequestException;
  
 public class CordovaHttpPostJson extends CordovaHttp implements Runnable {
-    
     public CordovaHttpPostJson(String urlString, JSONObject jsonObj, Map<String, String> headers, CallbackContext callbackContext) {
         super(urlString, jsonObj, headers, callbackContext);
     }
@@ -28,6 +28,7 @@ public class CordovaHttpPostJson extends CordovaHttp implements Runnable {
         try {
             HttpRequest request = HttpRequest.post(this.getUrlString());
             this.setupSecurity(request);
+            this.setupTimeouts(request);
             request.headers(this.getHeaders());
             request.acceptJson();
             request.contentType(HttpRequest.CONTENT_TYPE_JSON);
@@ -50,6 +51,8 @@ public class CordovaHttpPostJson extends CordovaHttp implements Runnable {
                 this.respondWithError(0, "The host could not be resolved");
             } else if (e.getCause() instanceof SSLHandshakeException) {
                 this.respondWithError("SSL handshake failed: " + e.getCause());
+            } else if (e.getCause() instanceof SocketTimeoutException) {
+                this.respondWithError("Timeout");
             } else {
                 this.respondWithError("There was an error with the request: " + e.getCause());
             }

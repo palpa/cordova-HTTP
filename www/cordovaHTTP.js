@@ -22,6 +22,9 @@ var http = {
     acceptAllHosts: function(allow, success, failure) {
         return exec(success, failure, "CordovaHttpPlugin", "acceptAllHosts", [allow]);
     },
+    setTimeouts: function(connectionTimeout, readTimeout, success, failure) {
+        return exec(success, failure, "CordovaHttpPlugin", "setTimeouts", [connectionTimeout, readTimeout]);
+    },
     post: function(url, params, headers, success, failure) {
         return exec(success, failure, "CordovaHttpPlugin", "post", [url, params, headers]);
     },
@@ -75,7 +78,7 @@ if (typeof angular !== "undefined") {
     angular.module('cordovaHTTP', []).factory('cordovaHTTP', function($timeout, $q) {
         function makePromise(fn, args, async) {
             var deferred = $q.defer();
-            
+
             var success = function(response) {
                 if (async) {
                     $timeout(function() {
@@ -85,7 +88,7 @@ if (typeof angular !== "undefined") {
                     deferred.resolve(response);
                 }
             };
-            
+
             var fail = function(response) {
                 if (async) {
                     $timeout(function() {
@@ -95,15 +98,15 @@ if (typeof angular !== "undefined") {
                     deferred.reject(response);
                 }
             };
-            
+
             args.push(success);
             args.push(fail);
-            
+
             fn.apply(http, args);
-            
+
             return deferred.promise;
         }
-        
+
         var cordovaHTTP = {
             useBasicAuth: function(username, password) {
                 return makePromise(http.useBasicAuth, [username, password]);
@@ -116,6 +119,9 @@ if (typeof angular !== "undefined") {
             },
             acceptAllCerts: function(allow) {
                 return makePromise(http.acceptAllCerts, [allow]);
+            },
+            setTimeouts: function(connectionTimeout, readTimeout) {
+                return makePromise(http.setTimeouts, [connectionTimeout, readTimeout]);
             },
             post: function(url, params, headers) {
                 return makePromise(http.post, [url, params, headers], true);

@@ -73,7 +73,16 @@ Accept all SSL certificates.  Or disable accepting all certificates.
     }, function() {
         console.log('error :(');
     });
-    
+
+### setTimeouts (Android only)
+Set connectionTimeout and readTimeout in milliseconds. Both default to 1 min if this function is not used. Set them to 0 will imply wait forever.
+
+    cordovaHTTP.setTimeouts(5000, 10000, function() {
+        console.log('success!');
+    }, function() {
+        console.log('error :(');
+    });
+ 
 ### post<a name="post"></a>
 Execute a POST request.  Takes a URL, parameters, and headers.
 
