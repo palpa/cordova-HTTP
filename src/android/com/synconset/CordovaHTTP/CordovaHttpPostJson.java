@@ -49,9 +49,9 @@ public class CordovaHttpPostJson extends CordovaHttp implements Runnable {
             if (e.getCause() instanceof UnknownHostException) {
                 this.respondWithError(0, "The host could not be resolved");
             } else if (e.getCause() instanceof SSLHandshakeException) {
-                this.respondWithError("SSL handshake failed");
+                this.respondWithError("SSL handshake failed: " + e.getCause());
             } else {
-                this.respondWithError("There was an error with the request");
+                this.respondWithError("There was an error with the request: " + e.getCause());
             }
         }
     }

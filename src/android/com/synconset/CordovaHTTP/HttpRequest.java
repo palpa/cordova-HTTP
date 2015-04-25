@@ -304,7 +304,7 @@ public class HttpRequest {
       try {
         SSLContext context = SSLContext.getInstance("TLS");
         context.init(null, trustAllCerts, new SecureRandom());
-        TRUSTED_FACTORY = context.getSocketFactory();
+        TRUSTED_FACTORY = new NoSSLv3SocketFactory(context.getSocketFactory());
       } catch (GeneralSecurityException e) {
         IOException ioException = new IOException(
             "Security exception configuring SSL context");
@@ -415,22 +415,22 @@ public class HttpRequest {
       String keyStoreType = KeyStore.getDefaultType();
       KeyStore keyStore = KeyStore.getInstance(keyStoreType);
       keyStore.load(null, null);
-      
+
       for (int i = 0; i < PINNED_CERTS.size(); i++) {
           keyStore.setCertificateEntry("CA" + i, PINNED_CERTS.get(i));
       }
-      
+
       // Create a TrustManager that trusts the CAs in our KeyStore
       String tmfAlgorithm = TrustManagerFactory.getDefaultAlgorithm();
       TrustManagerFactory tmf = TrustManagerFactory.getInstance(tmfAlgorithm);
       tmf.init(keyStore);
-      
+
       // Create an SSLContext that uses our TrustManager
-      SSLContext sslContext = SSLContext.getInstance("TLS");
+      SSLContext sslContext = SSLContext.getInstance("TLSv1");
       sslContext.init(null, tmf.getTrustManagers(), null);
-      PINNED_FACTORY = sslContext.getSocketFactory();
+      PINNED_FACTORY = new NoSSLv3SocketFactory(sslContext.getSocketFactory());
   }
-  
+
   /**
   * Add a certificate to test against when using ssl pinning.
   *
