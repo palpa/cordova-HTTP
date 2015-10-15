@@ -183,7 +183,6 @@ For instance, the following features are currently not supported:
 
 - cookies support (a cookie set by a request isn't sent in subsequent requests)
 - read content of error responses (only the HTTP status code and message are returned)
-- read returned HTTP headers (e.g. in case security tokens are returned as headers)
 
 Take this into account when using this plugin into your application.
 
